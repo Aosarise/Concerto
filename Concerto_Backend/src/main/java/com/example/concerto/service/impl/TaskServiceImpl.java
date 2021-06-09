@@ -37,6 +37,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     UserTaskDao userTaskDao;
 
+    @Autowired
+    TaskCommentDao taskCommentDao;
+
     @Transactional
     @Override
     public Long createTask(AddTaskForm addTaskForm) {
@@ -259,5 +262,17 @@ public class TaskServiceImpl implements TaskService {
         }else {
             taskDao.modifyTaskStatus(taskId,0);
         }
+    }
+
+    @Override
+    public int addComment(TaskComment tc) {
+        int result = taskCommentDao.addComment(tc);
+        return result;
+    }
+
+    @Override
+    public int deleteComment(Long taskCommentId) {
+        int result = taskCommentDao.deletecomment(taskCommentId);
+        return result;
     }
 }

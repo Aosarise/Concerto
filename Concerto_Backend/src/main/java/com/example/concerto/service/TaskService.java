@@ -1,6 +1,7 @@
 package com.example.concerto.service;
 
 import com.example.concerto.fo.*;
+import com.example.concerto.pojo.TaskComment;
 import com.example.concerto.vo.TaskVo;
 
 /**
@@ -16,4 +17,7 @@ public interface TaskService {
     Long addSubtask(SubtaskForm subtaskForm);
     void modifySubtask(ModifySubtaskForm modifySubtaskForm);
     void changeTaskStatus(Long taskId);
+
+    int addComment(TaskComment tc);
+    int deleteComment(Long taskCommentId);
 }
