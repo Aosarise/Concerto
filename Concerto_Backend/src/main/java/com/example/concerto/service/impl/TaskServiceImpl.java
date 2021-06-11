@@ -6,6 +6,7 @@ import com.example.concerto.fo.*;
 import com.example.concerto.pojo.*;
 import com.example.concerto.service.TaskService;
 import com.example.concerto.vo.SubtaskVo;
+import com.example.concerto.vo.TaskVersionUserInfo;
 import com.example.concerto.vo.TaskVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskCommentDao taskCommentDao;
+
+    @Autowired
+    TaskVersionInfoDao taskVersionInfoDao;
 
     @Transactional
     @Override
@@ -274,5 +278,11 @@ public class TaskServiceImpl implements TaskService {
     public int deleteComment(Long taskCommentId) {
         int result = taskCommentDao.deletecomment(taskCommentId);
         return result;
+    }
+
+    @Override
+    public List<TaskVersionUserInfo> selectAllTaskVersionInfo(Long taskId) {
+        List<TaskVersionUserInfo> vlist = taskVersionInfoDao.selectAllTaskVersionInfo(taskId);
+        return vlist;
     }
 }

@@ -5,6 +5,7 @@ import com.example.concerto.fo.*;
 import com.example.concerto.pojo.TaskComment;
 import com.example.concerto.response.CommonResponse;
 import com.example.concerto.service.TaskService;
+import com.example.concerto.vo.TaskVersionUserInfo;
 import com.example.concerto.vo.TaskVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author sarise
@@ -97,5 +99,14 @@ public class TaskController {
     public CommonResponse deleteComment(Long taskCommentId){
         int result = taskService.deleteComment(taskCommentId);
         return new CommonResponse(200,"删除留言成功！","");
+    }
+
+    @GetMapping("/task/versioninfo")
+    public CommonResponse selectTaskVersionInfo(Long taskId){
+        List<TaskVersionUserInfo> vlist = taskService.selectAllTaskVersionInfo(taskId);
+        if(vlist.equals(null) || vlist.isEmpty()){
+            return new CommonResponse(200,"该任务没有修改历史！", "");
+        }
+        return new CommonResponse(200,"查询成功！", vlist);
     }
 }

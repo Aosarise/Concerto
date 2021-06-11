@@ -5,6 +5,14 @@
 
 <mapper namespace="com.example.concerto.dao.TaskVersionInfoDao">
 
+    <select id="selectAllTaskVersionInfo" parameterType="java.lang.Long" resultType="com.example.concerto.vo.TaskVersionUserInfo">
+        select task_version_id, task_id, task_version, task_version_description, task_version_modify_time, u.user_name
+        from user u, task_version tv
+        <where>
+            task_id = #{taskId}
+            and u.user_id = tv.task_version_modify_user_id
+        </where>
+    </select>
 
 
 </mapper>

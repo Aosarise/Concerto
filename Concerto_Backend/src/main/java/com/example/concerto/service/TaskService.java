@@ -2,7 +2,10 @@ package com.example.concerto.service;
 
 import com.example.concerto.fo.*;
 import com.example.concerto.pojo.TaskComment;
+import com.example.concerto.vo.TaskVersionUserInfo;
 import com.example.concerto.vo.TaskVo;
+
+import java.util.List;
 
 /**
  * @author sarise
@@ -20,4 +23,5 @@ public interface TaskService {
 
     int addComment(TaskComment tc);
     int deleteComment(Long taskCommentId);
+    List<TaskVersionUserInfo> selectAllTaskVersionInfo(Long taskId);
 }
