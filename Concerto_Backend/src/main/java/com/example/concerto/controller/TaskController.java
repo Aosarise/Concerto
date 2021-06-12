@@ -2,20 +2,25 @@ package com.example.concerto.controller;
 
 import com.example.concerto.annotation.PassToken;
 import com.example.concerto.fo.*;
+import com.example.concerto.pojo.TaskComment;
 import com.example.concerto.response.CommonResponse;
 import com.example.concerto.service.TaskService;
+import com.example.concerto.vo.TaskVersionUserInfo;
 import com.example.concerto.vo.TaskVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author sarise
  * @version 1.0
  * @date 2021/4/29 上午9:34
  */
-
+@Slf4j
 @RestController
 public class TaskController {
     @Autowired
@@ -74,5 +79,34 @@ public class TaskController {
     public CommonResponse changeTaskStatus(@PathVariable(value="taskId") Long taskId){
         taskService.changeTaskStatus(taskId);
         return new CommonResponse(200,"修改任务状态成功","");
+    }
+
+    @PostMapping("/task/comment")
+    public CommonResponse releaseComment(Long taskId, Long userId, String content){
+        log.info("[taskID]:" + taskId);
+        Date now = new Date();
+        TaskComment tc = TaskComment.builder()
+                .taskId(taskId)
+                .taskCommentUserId(userId)
+                .commentContent(content)
+                .commentTime(now)
+                .build();
+        int result = taskService.addComment(tc);
+        return new CommonResponse(200,"任务留言发布成功！","");
+    }
+
+    @DeleteMapping("/task/comment")
+    public CommonResponse deleteComment(Long taskCommentId){
+        int result = taskService.deleteComment(taskCommentId);
+        return new CommonResponse(200,"删除留言成功！","");
+    }
+
+    @GetMapping("/task/versioninfo")
+    public CommonResponse selectTaskVersionInfo(Long taskId){
+        List<TaskVersionUserInfo> vlist = taskService.selectAllTaskVersionInfo(taskId);
+        if(vlist.equals(null) || vlist.isEmpty()){
+            return new CommonResponse(200,"该任务没有修改历史！", "");
+        }
+        return new CommonResponse(200,"查询成功！", vlist);
     }
 }

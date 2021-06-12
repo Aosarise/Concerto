@@ -1,6 +1,7 @@
 package com.example.concerto.dao;
 
 import com.example.concerto.pojo.TaskVersionInfo;
+import com.example.concerto.vo.TaskVersionUserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -35,4 +36,5 @@ public interface TaskVersionInfoDao {
     List<TaskVersionInfo> queryTaskVersionInfoList(Long taskId);
 
 
+    List<TaskVersionUserInfo> selectAllTaskVersionInfo(Long taskId);
 }

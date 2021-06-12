@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.concerto.dao.TaskCommentDao">
+
+    <insert id="addComment" useGeneratedKeys="true" keyProperty="taskCommentId" parameterType="TaskComment">
+        insert into task_comment values (NULL,#{taskId},#{taskCommentUserId},#{commentContent},#{commentTime})
+    </insert>
+
+    <delete id="deletecomment">
+        delete from task_comment
+        <where>
+            task_comment_id = #{taskCommentId}
+        </where>
+    </delete>
+
+</mapper>

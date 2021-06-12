@@ -1,6 +1,7 @@
 package com.example.concerto.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import java.util.Date;
  * @version 1.0
  * @date 2021/4/20 下午7:38
  */
+@Builder
 public class TaskComment {
     Long taskCommentId;
     Long taskId;
