@@ -4,10 +4,7 @@ import com.example.concerto.dao.*;
 import com.example.concerto.exception.CustomException;
 import com.example.concerto.pojo.*;
 import com.example.concerto.service.UserService;
-import com.example.concerto.utils.CaptchaUtils;
-import com.example.concerto.utils.FormUtils;
-import com.example.concerto.utils.MailUtils;
-import com.example.concerto.utils.TokenUtils;
+import com.example.concerto.utils.*;
 import freemarker.template.TemplateException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +125,7 @@ public class UserServiceImpl implements UserService {
                 throw new CustomException(404,"找不到对应用户");
 
             Userinfo userinfo=new Userinfo();
+            userinfo.setUserId(UserId);
             BeanUtils.copyProperties(user,userinfo);
             userinfo.setUserPhone(user.getUserPhone()!=null?user.getUserPhone():"");
             userinfo.setUserIntroducton(user.getUserIntroducton()!=null?user.getUserIntroducton():"");
@@ -183,33 +181,28 @@ public class UserServiceImpl implements UserService {
             long UserId = (long) session.getAttribute("UserId");
             messageDao.setMessage(UserId);
     }
-
     @Override
     public List<Task> getAllSchedule(HttpSession session)
     {
+            Date today=new Date();
             long UserId = (long) session.getAttribute("UserId");
             List<Task> taskList=taskDao.getTasksByUserId(UserId);
             Collections.sort(taskList);
+            for(Task task:taskList)
+            {
+                task.setTaskDays(DatesUtils.getTermDays2(today,task.getTaskEndTime()));
+                if(task.getSubTasks()!=null) {
+                    task.setSubTaskNum(task.getSubTasks().size());
+                }
+            }
             return  taskList;
 
     }
 
-    @Override
-    public List<Task> getweekSchedule(HttpSession session) {
-            long UserId = (long) session.getAttribute("UserId");
-            List<Task> taskList=taskDao.getTasksByUserId(UserId);
-            Collections.sort(taskList);
-            return  taskList;
-
-    }
 
     @Override
     public List<Task> getmonthSchedule(HttpSession session) {
-            long UserId = (long) session.getAttribute("UserId");
-
-            List<Task> taskList=taskDao.getTasksByUserId(UserId);
-
-
+            List<Task> taskList=this.getAllSchedule(session);
             //获取本月的第一个和最后一天
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
@@ -247,11 +240,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Task> getWeekSchedule(HttpSession session) {
-            long UserId = (long) session.getAttribute("UserId");
-
-            List<Task> taskList=taskDao.getTasksByUserId(UserId);
-
-
+            List<Task> taskList=this.getAllSchedule(session);
             //获取本周的第一个和最后一天
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
@@ -288,22 +277,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Task> getRecommendSchedule(HttpSession session) {
-            long UserId = (long) session.getAttribute("UserId");
-            List<Task> taskList=taskDao.getTasksByUserId(UserId);
+            List<Task> taskList=this.getAllSchedule(session);
             Collections.sort(taskList);
             return  taskList;
     }
 
     @Override
     public List<Task> getDaySchedule(HttpSession session) {
+        List<Task> taskList=this.getAllSchedule(session);
         Date today=new Date();
-        long UserId = (long) session.getAttribute("UserId");
-        List<Task> taskList=taskDao.getTasksByUserId(UserId);
         Collections.sort(taskList);
 
         List<Task> resultList=new ArrayList<>();
 
-        //筛选出本周的任务
+        //筛选出本日的任务
         for(Task task:taskList)
         {
             if(task.getTaskStartTime().compareTo(today)<=0&&task.getTaskEndTime().compareTo(today)>=0)
@@ -322,5 +309,18 @@ public class UserServiceImpl implements UserService {
         userAdvice.setUserId(userId);
         userAdvice.setAdviceContent(content);
         userAdviceDao.insertAdvice(userAdvice);
+    }
+
+    @Override
+    public Set<Tag> getTags(long userId)
+    {
+        Set<Tag> tagSet=new HashSet<>();
+        List<Task> taskList=taskDao.getTasksByUserId(userId);
+        for(Task task:taskList)
+        {
+            Set<Tag> tempTagSet=task.getTags();
+            tagSet.addAll(tempTagSet);
+        }
+        return tagSet;
     }
 }

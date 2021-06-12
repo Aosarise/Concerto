@@ -7,6 +7,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ Author     ：aaagx.
@@ -34,8 +35,6 @@ public interface UserService {
 
     List<Task> getAllSchedule(HttpSession session)
     ;
-    List<Task> getweekSchedule(HttpSession session)
-    ;
     List<Task> getmonthSchedule(HttpSession session)
     ;
 
@@ -47,4 +46,6 @@ public interface UserService {
     List<Task> getDaySchedule(HttpSession session);
 
     void insertAdvice(long userId, String content);
+
+    Set<Tag> getTags(long userId);
 }
